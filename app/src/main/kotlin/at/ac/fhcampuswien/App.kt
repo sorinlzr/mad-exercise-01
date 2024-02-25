@@ -24,13 +24,11 @@ class App {
      * @throws IllegalArgumentException if the length is more than 9 or less than 1.
      */
     val generateRandomNonRepeatingNumber: (Int) -> Int = { length ->
-        val sanitizedLength = when {
-            length < 1 -> 1
-            length > 9 -> 9
-            else -> length
+        if (length > 9 || length < 1) {
+            throw IllegalArgumentException("the length must be between 1 and 9")
         }
 
-        val randomDigits = (1..9).shuffled().take(sanitizedLength);
+        val randomDigits = (1..9).shuffled().take(length);
         randomDigits.joinToString("").toInt()
     }
 
