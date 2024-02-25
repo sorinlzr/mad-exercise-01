@@ -6,7 +6,30 @@ package at.ac.fhcampuswien
 class App {
     // Game logic for a number guessing game
     fun playNumberGame(digitsToGuess: Int = 4) {
-        //TODO: build a menu which calls the functions and works with the return values
+        val generatedNumber = generateRandomNonRepeatingNumber(digitsToGuess)
+        println("generared number: $generatedNumber")
+
+        var attempts = 0
+        var userInput: Int
+        var compareResult: CompareResult
+
+        do {
+            print("enter your guess: ")
+            userInput = readlnOrNull()?.toIntOrNull() ?: throw IllegalArgumentException("invalid input, please enter a number!")
+            compareResult = checkUserInputAgainstGeneratedNumber(userInput, generatedNumber)
+            println(compareResult)
+            attempts++
+        } while (compareResult.m != digitsToGuess)
+
+        val gameFinishedText = when {
+            attempts < 5 -> "GG EZ"
+            attempts < 10 -> "fair enough"
+            attempts < 15 -> "not bad"
+            else -> "you can do better"
+        }
+
+        println("you guessed the number correctly in $attempts attempts, $gameFinishedText")
+
     }
 
     /**
@@ -63,7 +86,7 @@ class App {
         inputDigits.forEach { uniqueInputDigits.add(it) }
 
 
-        for (i in inputDigits.indices) {
+        for (i in generatedDigits.indices) {
             if (uniqueInputDigits.contains(generatedDigits[i])) {
                 correctDigits++
                 if (inputDigits[i] == generatedDigits[i]) {
@@ -77,9 +100,7 @@ class App {
 }
 
 fun main() {
-    println(App().checkUserInputAgainstGeneratedNumber(1, 1))
-    println(App().checkUserInputAgainstGeneratedNumber(1234, 1527))
-    println(App().checkUserInputAgainstGeneratedNumber(324195, 912354))
-    println(App().checkUserInputAgainstGeneratedNumber(123765, 123987))
-    println(App().checkUserInputAgainstGeneratedNumber(5555,8576))
+    val app = App()
+    app.playNumberGame()
+    app.playNumberGame(5)
 }
