@@ -49,14 +49,37 @@ class App {
      * @throws IllegalArgumentException if the inputs do not have the same number of digits.
      */
     val checkUserInputAgainstGeneratedNumber: (Int, Int) -> CompareResult = { input, generatedNumber ->
-        //TODO implement the function
-        CompareResult(0, 0)   // return value is a placeholder
+        val inputDigits = input.toString()
+        val generatedDigits = generatedNumber.toString()
+
+        if (inputDigits.length != generatedDigits.length) {
+            throw IllegalArgumentException("the input and the generated number don't have the same number of digits")
+        }
+
+        var correctDigits = 0
+        var correctPosition = 0
+
+        val uniqueInputDigits = HashSet<Char>()
+        inputDigits.forEach { uniqueInputDigits.add(it) }
+
+
+        for (i in inputDigits.indices) {
+            if (uniqueInputDigits.contains(generatedDigits[i])) {
+                correctDigits++
+                if (inputDigits[i] == generatedDigits[i]) {
+                    correctPosition++
+                }
+            }
+        }
+
+        CompareResult(correctDigits, correctPosition)
     }
 }
 
 fun main() {
-    println(App().generateRandomNonRepeatingNumber(4));
-    println(App().generateRandomNonRepeatingNumber(14));
-    println(App().generateRandomNonRepeatingNumber(-4));
-    println(App().generateRandomNonRepeatingNumber(8));
+    println(App().checkUserInputAgainstGeneratedNumber(1, 1))
+    println(App().checkUserInputAgainstGeneratedNumber(1234, 1527))
+    println(App().checkUserInputAgainstGeneratedNumber(324195, 912354))
+    println(App().checkUserInputAgainstGeneratedNumber(123765, 123987))
+    println(App().checkUserInputAgainstGeneratedNumber(5555,8576))
 }
