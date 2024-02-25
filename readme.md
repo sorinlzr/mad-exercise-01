@@ -9,17 +9,90 @@
 ## Questions
 ### Describe how Kotlin handles null safety. What are nullable types and non-null types in Kotlin? (0,5 points)
 
-<span style="color:blue">Provide your answer here! </span>
-> Note: you can also use code snippets to illustrate your answer. 
+In kotlin, the type system is designed to eliminate the danger of null references, often referred to as [The Billion Dollar Mistake](https://en.wikipedia.org/wiki/Null_pointer#History). 
+This is achieved by distinguishing between nullable and non-nullable types. 
+Therefore types are non-nullable by default, which means you cannot assign null to them
 
-```kotlin 
-// example code snippet
-val a: String = "value" // non-null type
+for example, a regular variable of type String cannot hold null:
+
+```kotlin
+var a: String = "abc"       // regular initialization means non-nullable by default
+a = null                    // this would cause a compilation error
+```
+
+to allow nulls, you can declare a variable as a nullable string by appending a `?` to its type:
+```kotlin
+var b: String? = "abc"  // can be set to null
+b = null                // ok
+print(b)
+```
+
+if you want to access a property on a nullable reference, 
+you need to handle the null condition explicitly to avoid compilation error:
+
+```kotlin
+val l = a.length                            // ok
+val l = b.length                            // error: variable 'b' can be null
+val l = if (b != null) b.length else -1     
 ```
 
 ### What are lambda expressions and higher order functions in Kotlin? Why would you store a function inside a variable? (0,5 points)
 
-<span style="color:blue">Provide your answer here!</span>
+lambda expressions in kotlin are essentially anonymous functions that you can treat as values, 
+they are defined using curly braces `{}` and the arrow operator `->`
+```Kotlin
+val sum = { x: Int, y: Int -> x + y }               // lambada expression
+```
+
+A higher-order function in kotlin is a function that takes functions as parameters or returns a function
+```Kotlin
+fun applyTwice(f: (Int) -> Int, x: Int): Int {
+    return f(f(x))
+}
+
+val result = applyTwice({ x -> x * 2 }, 10)
+println(result)             // prints 40
+```
+
+You can store a function inside a variable to pass it as a parameter to another function:
+```kotlin
+val ascendingComparator: (Int, Int) -> Int = { a, b -> a - b }
+val descendingComparator: (Int, Int) -> Int = { a, b -> b - a }
+
+fun sortWithComparator(list: List<Int>, comparator: (Int, Int) -> Int): List<Int> {
+    // sort the list using the provided comparator function
+}
+
+val sortedAscending = sortWithComparator(listOf(3, 1, 2), ascendingComparator)
+val sortedDescending = sortWithComparator(listOf(3, 1, 2), descendingComparator)
+```
+
+or to return it from another function:
+```kotlin
+fun getOperation(operationType: String): (Int, Int) -> Int {
+    return when (operationType) {
+        "add" -> { a, b -> a + b }
+        "subtract" -> { a, b -> a - b }
+        else -> throw IllegalArgumentException("unsupported operation")
+    }
+}
+
+val addFunction = getOperation("add")
+val subtractFunction = getOperation("subtract")
+
+val result1 = addFunction(3, 2)         // prints 5
+val result2 = subtractFunction(3, 2)    // prints 1
+```
+
+Storing functions inside variables is also common when working with callback-based APIs. 
+For example when registering event listeners in android development you often store callback functions inside variables to be invoked when the event occurs:
+```kotlin
+val clickListener: (View) -> Unit = { view ->
+    // handle click 
+}
+
+button.setOnClickListener(clickListener)
+```
 
 ### Provide a solution for the following number guessing game inside `App.kt`. (3 points)
 
