@@ -24,8 +24,14 @@ class App {
      * @throws IllegalArgumentException if the length is more than 9 or less than 1.
      */
     val generateRandomNonRepeatingNumber: (Int) -> Int = { length ->
-        //TODO implement the function
-        0   // return value is a placeholder
+        val sanitizedLength = when {
+            length < 1 -> 1
+            length > 9 -> 9
+            else -> length
+        }
+
+        val randomDigits = (1..9).shuffled().take(sanitizedLength);
+        randomDigits.joinToString("").toInt()
     }
 
     /**
@@ -51,6 +57,8 @@ class App {
 }
 
 fun main() {
-    println("Hello World!")
-    // TODO: call the App.playNumberGame function with and without default arguments
+    println(App().generateRandomNonRepeatingNumber(4));
+    println(App().generateRandomNonRepeatingNumber(14));
+    println(App().generateRandomNonRepeatingNumber(-4));
+    println(App().generateRandomNonRepeatingNumber(8));
 }
